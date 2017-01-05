@@ -1,0 +1,13 @@
+{
+    "name": "helllomatt/aspen",
+    "autoload": {
+        "psr-4": {
+            "ASPEN\\": "aspen/",
+            "ASPEN\\Database\\": "aspen/Database",
+            "Authentication\\": "apps/auth/"
+        }
+    },
+    "require": {
+        "bshaffer/oauth2-server-php": "~1.8"
+    }
+}
