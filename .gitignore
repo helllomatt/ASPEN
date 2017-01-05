@@ -46,5 +46,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-
+# Custom files and folders
 vendor/
+composer.lock
