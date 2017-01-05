@@ -2,6 +2,7 @@
 
 namespace ASPEN;
 
+use ASPEN\Response;
 use ASPEN\Database\DB;
 
 class AppManager {
@@ -24,6 +25,11 @@ class AppManager {
         }
     }
 
+    private function error($msg = '') {
+        $response = new Response();
+        $response->error($msg);
+    }
+
     public function getAppFolders() {
         return $this->folders;
     }
@@ -43,8 +49,13 @@ class AppManager {
             $path = 'apps/'.$folder;
 
             $app = (include $path.'/controller.php');
-            $app->setDatabase($this->database);
-            if ($app->run()) $nothing = false;
+            if ($app === 1) {
+                $this->error('Invalid app setup for \''.$folder.'\' (missing return).');
+                return;
+            } else {
+                $app->setDatabase($this->database);
+                if ($app->run()) $nothing = false;
+            }
 
             $this->apps[] = $app;
         }
