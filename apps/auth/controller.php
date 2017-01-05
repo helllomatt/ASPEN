@@ -23,4 +23,13 @@ $app->get('oauth2/validate/', function() {
     }
 });
 
+$app->get('identity/', function() {
+    $auth = new Authentication\Auth();
+    $auth->requireValidToken();
+
+    $response = new Response();
+    $response->add('identity', $auth->getUser());
+    $response->success();
+});
+
 return $app;
