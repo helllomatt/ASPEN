@@ -1,6 +1,5 @@
 <?php
 
-//header('Content-Type: application/json');
 require 'vendor/autoload.php';
 
 $database = new ASPEN\Database\DB();
