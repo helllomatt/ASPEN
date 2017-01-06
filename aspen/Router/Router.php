@@ -29,7 +29,7 @@ class Router {
     }
 
     public function getVariables() {
-        return $this->variables;
+        return array_merge($this->variables, $this->postVariables());
     }
 
     public function getVariable($var = '') {
@@ -74,5 +74,11 @@ class Router {
 
     private function isJSON($string = '') {
         return is_string($string) && is_array(json_decode($string, true)) && json_last_error() == JSON_ERROR_NONE;
+    }
+
+    private function postVariables() {
+        $vars = filter_input_array(INPUT_POST);
+        if (is_array($vars)) return $vars;
+        else return [];
     }
 }
