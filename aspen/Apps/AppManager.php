@@ -15,11 +15,13 @@ class AppManager {
     }
 
     private function findApps() {
-        $possible = scandir('apps/');
+        $possible = array_merge(scandir('apps/'), scandir('vendor/'));
 
         foreach ($possible as $folder) {
             if ($folder == '..' || $folder == '.') continue;
-            if (file_exists('apps/'.$folder.'/controller.php')) {
+            $app_path = 'apps/%s/controller.php';
+            $ven_path = 'vendor/%s/controller.php';
+            if (file_exists(sprintf($app_path, $folder)) || file_exists(sprintf($ven_path, $folder))) {
                 $this->folders[] = $folder;
             }
         }
@@ -46,9 +48,16 @@ class AppManager {
         $nothing = true;
 
         foreach ($this->getAppFolders() as $folder) {
-            $path = 'apps/'.$folder;
+            $app_path = 'apps/'.$folder.'/controller.php';
+            $ven_path = 'vendor/'.$folder.'/controller.php';
 
-            $app = (include $path.'/controller.php');
+            if (file_exists($app_path)) $app = include $app_path;
+            elseif (file_exists($ven_path)) $app = include $ven_path;
+            else {
+                $this->error('App controller not found for \''.$folder.'\'');
+                return;
+            }
+
             if ($app === 1) {
                 $this->error('Invalid app setup for \''.$folder.'\' (missing return).');
                 return;
