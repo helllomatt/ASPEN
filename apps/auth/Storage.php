@@ -254,15 +254,9 @@ class Pdo implements
         $stmt->execute(compact('refresh_token'));
         return $stmt->rowCount() > 0;
     }
-    // plaintext passwords are bad!  Override this for your application
     protected function checkPassword($user, $password)
     {
-        return $user['password'] == $this->hashPassword($password);
-    }
-    // use a secure hashing algorithm when storing passwords. Override this for your application
-    protected function hashPassword($password)
-    {
-        return sha1($password);
+        return password_verify($password, $user['password']);
     }
     public function getUser($id)
     {
@@ -296,7 +290,7 @@ class Pdo implements
     public function setUser($username, $password, $firstName = null, $lastName = null)
     {
         // do not store in plaintext
-        $password = $this->hashPassword($password);
+        $password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 11, 'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM)]);
         // if it exists, update it.
         if ($this->getUser($username)) {
             $stmt = $this->db->prepare($sql = sprintf('UPDATE %s SET password=:password, first_name=:firstName, last_name=:lastName where username=:username', $this->config['user_table']));
