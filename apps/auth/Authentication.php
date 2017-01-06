@@ -65,6 +65,7 @@ class Auth {
     }
 
     public function requirePermission($permission = '') {
+        $this->requireValidToken();
         $user = $this->getUser();
         if (!$user || !in_array($permission, $user['permissions'])) {
             $response = new Response();
