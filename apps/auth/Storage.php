@@ -188,14 +188,15 @@ class Pdo implements
     /* OAuth2\Storage\UserCredentialsInterface */
     public function checkUserCredentials($username, $password)
     {
-        if ($user = $this->getUser($username)) {
+        if ($user = $this->getUserByUsername($username)) {
             return $this->checkPassword($user, $password);
         }
         return false;
     }
-    public function getUserDetails($username)
+    public function getUserDetails($id)
     {
-        return $this->getUser($username);
+        if (is_numeric($id)) return $this->getUser($id);
+        else return $this->getUserByUsername($id);
     }
     /* UserClaimsInterface */
     public function getUserClaims($user_id, $claims)
@@ -270,6 +271,14 @@ class Pdo implements
         if (!$userInfo = $ustmt->fetch(\PDO::FETCH_ASSOC)) return false;
 
         return array_merge(['user_id' => $userInfo['id']], $userInfo, $this->getPermissions($id));
+    }
+
+    public function getUserByUsername($username) {
+        $ustmt = $this->db->prepare($sql = sprintf('SELECT * from %s where username=:username', $this->config['user_table']));
+        $ustmt->execute(array('username' => $username));
+        if (!$userInfo = $ustmt->fetch(\PDO::FETCH_ASSOC)) return false;
+
+        return array_merge(['user_id' => $userInfo['id']], $userInfo, $this->getPermissions($userInfo['id']));
     }
     public function getPermissions($id) {
         $sql = sprintf('SELECT * FROM %s up RIGHT JOIN %s p ON up.permission_id = p.id WHERE up.user_id = :id', $this->config['user_permissions_rel_table'], $this->config['permissions_table']);
