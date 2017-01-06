@@ -1,6 +1,7 @@
 {
     "name": "helllomatt/aspen",
     "description": "Simple PHP API framework",
+    "version": "0.1",
     "keywords": ["api", "framework"],
     "license": "MIT",
     "authors": [
