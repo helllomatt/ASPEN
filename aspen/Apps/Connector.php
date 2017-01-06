@@ -3,6 +3,7 @@
 namespace ASPEN;
 
 use ASPEN\Database\DB;
+use ASPEN\Response;
 
 class Connector {
     private $data;
@@ -23,5 +24,9 @@ class Connector {
 
     public function db() {
         return $this->database;
+    }
+
+    public function usingMethod($method) {
+        return $_SERVER['REQUEST_METHOD'] == strtoupper($method);
     }
 }
