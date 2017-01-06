@@ -2,10 +2,14 @@
     "name": "helllomatt/aspen",
     "description": "Simple PHP API framework",
     "keywords": ["api", "framework"],
-    "authors": {
-        "email": "me@helllomatt.com",
-        "homepage": "http://helllomatt.com",
-    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matthew Tempinski",
+            "email": "me@helllomatt.com",
+            "homepage": "http://helllomatt.com"
+        }
+    ],
     "require": {
         "php": ">=5.6.0",
         "bshaffer/oauth2-server-php": "~1.8"
