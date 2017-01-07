@@ -7,7 +7,7 @@ use ASPEN\Response;
 
 class Connector {
     private $data;
-    private $database;
+    private $database = null;
 
     public function setData($data) {
         $this->data = $data;
@@ -18,7 +18,7 @@ class Connector {
         else return null;
     }
 
-    public function setDatabase(DB $db) {
+    public function setDatabase(DB $db = null) {
         $this->database = $db;
     }
 

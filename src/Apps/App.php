@@ -8,7 +8,7 @@ class App {
     private $number;
     private $router;
     private $name;
-    private $database;
+    private $database = null;
     private $callbacks = [];
 
     public function __construct($name = '') {
@@ -30,7 +30,7 @@ class App {
         return $this->name;
     }
 
-    public function setDatabase(DB $db) {
+    public function setDatabase(DB $db = null) {
         $this->database = $db;
     }
 
