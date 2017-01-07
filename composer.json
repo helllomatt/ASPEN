@@ -4,6 +4,12 @@
     "version": "0.1",
     "keywords": ["api", "framework"],
     "license": "MIT",
+    "scripts": {
+        "post-install-cmd": [
+            "ASPEN\\Installer::createHtaccess",
+            "ASPEN\\Installer::createIndex"
+        ]
+    },
     "authors": [
         {
             "name": "Matthew Tempinski",
@@ -17,8 +23,8 @@
     },
     "autoload": {
         "psr-4": {
-            "ASPEN\\": "aspen/",
-            "ASPEN\\Database\\": "aspen/Database",
+            "ASPEN\\": "src/",
+            "ASPEN\\Database\\": "src/Database",
             "Authentication\\": "apps/auth/"
         }
     }
