@@ -3,6 +3,7 @@
 namespace Authentication;
 
 use ASPEN\Response;
+use ASPEN\Database\DB;
 
 use OAuth2\Request;
 use OAuth2\Autoloader;
@@ -14,6 +15,7 @@ use OAuth2\GrantType\AuthorizationCode;
 class Auth {
     private $server     = null;
     private $storage    = null;
+    private $db         = null;
 
     private $database_name = 'test';
     private $database_host = 'localhost';
@@ -23,6 +25,7 @@ class Auth {
     private $valid = false;
 
     public function __construct() {
+        $this->db = (new DB())->connect($this->database_host, $this->database_user, $this->database_pass, $this->database_name);
         $this->createServer();
     }
 
@@ -61,7 +64,14 @@ class Auth {
 
     public function getUser() {
         $token = $this->getToken();
-        return $this->storage->getUserDetails($token['user_id']);
+        $query = $this->db->query("select")
+            ->columns(["username", "first_name", "last_name"])
+            ->from("users")
+            ->where("id = :uid", [":uid" => $token['user_id']])
+            ->execute();
+
+        if ($query->failed() || $query->count() == 0) return [];
+        return array_merge($query->fetch()[0], $this->storage->getPermissions($token['user_id']));
     }
 
     public function requirePermission($permission = '') {
@@ -79,11 +89,7 @@ class Auth {
     private function createServer() {
         Autoloader::register();
 
-        $storage = new Pdo([
-            'dsn'       => $this->dsn(),
-            'username'  => $this->database_user,
-            'password'  => $this->database_pass
-        ], [
+        $storage = new Pdo($this->db, [
             'user_table' => 'users'
         ]);
 
