@@ -63,8 +63,6 @@ class AppManager {
                 return;
             }
 
-            print_r($folder);
-
             if ($app === 1) {
                 $this->error('Invalid app setup for \''.$folder.'\' (missing return).');
                 return;
