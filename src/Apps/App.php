@@ -39,10 +39,12 @@ class App {
         $connector = new Connector();
         $connector->setData($this->router->getVariables());
         $connector->setDatabase($this->database);
+
+        $good = [];
         for ($i = 0; $i < count($this->callbacks); $i++) {
-            $this->callbacks[$i]($connector);
+            if ($this->callbacks[$i]($connector) !== false) $good[] = true;
         }
 
-        return true;
+        return $good;
     }
 }

@@ -48,7 +48,7 @@ class AppManager {
     }
 
     public function loadApps() {
-        $nothing = true;
+        $fail = [];
 
         foreach ($this->getAppFolders() as $folder) {
             $builtin  = dirname(dirname(dirname(__FILE__))).'/apps/'.$folder.'/controller.php';
@@ -68,13 +68,15 @@ class AppManager {
                 return;
             } else {
                 $app->setDatabase($this->database);
-                if ($app->run()) $nothing = false;
+                $run = $app->run();
+                if (empty($run)) $fail[] = 1;
+                else $fail[] = 0;
             }
 
             $this->apps[] = $app;
         }
 
-        if ($nothing) $this->noResponse();
+        if (array_count_values($fail)[1] >= count($fail)) $this->noResponse();
     }
 
     private function noResponse() {
