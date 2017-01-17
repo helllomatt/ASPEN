@@ -2,6 +2,7 @@
 
 namespace Authentication;
 
+use ASPEN\Config;
 use ASPEN\Response;
 use ASPEN\Database\DB;
 
@@ -16,16 +17,11 @@ class Auth {
     private $server     = null;
     private $storage    = null;
     private $db         = null;
-
-    private $database_name = 'aspen-dev';
-    private $database_host = 'localhost';
-    private $database_user = 'root';
-    private $database_pass = 'root';
-
     private $valid = false;
 
     public function __construct() {
-        $this->db = (new DB())->connect($this->database_host, $this->database_user, $this->database_pass, $this->database_name);
+
+        $this->db = (new DB())->connect($database_host, $database_user, $database_pass, $database_name);
         $this->createServer();
     }
 
