@@ -20,6 +20,10 @@ class Auth {
     private $valid = false;
 
     public function __construct() {
+        $database_name = Config::get("db")['dbname'];
+        $database_host = Config::get("db")['host'];
+        $database_user = Config::get("db")['username'];
+        $database_pass = Config::get("db")['password'];
 
         $this->db = (new DB())->connect($database_host, $database_user, $database_pass, $database_name);
         $this->createServer();
