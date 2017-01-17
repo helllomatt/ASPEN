@@ -4,6 +4,7 @@ namespace ASPEN;
 
 class Response {
     private $data = [];
+    private static $count = 0;
 
     public function __construct() {
         $this->data['status'] = 'fail';
@@ -20,16 +21,19 @@ class Response {
     }
 
     public function fail() {
+        if ($this->hasResponded()) return;
         $this->status('fail');
         $this->respond();
     }
 
     public function success() {
+        if ($this->hasResponded()) return;
         $this->status('success');
         $this->respond();
     }
 
     public function error($message = '', $code = 0, $includeData = false) {
+        if ($this->hasResponded()) return;
         $this->status('error');
         if ($code != 0) $this->data['code'] = $code;
         if (!$includeData) unset($this->data['data']);
@@ -40,5 +44,10 @@ class Response {
     public function respond() {
         header('Content-Type: application/json');
         echo json_encode($this->data);
+        self::$count++;
+    }
+
+    public function hasResponded() {
+        return self::$count > 0;
     }
 }
