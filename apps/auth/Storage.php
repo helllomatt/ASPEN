@@ -274,7 +274,7 @@ class Pdo implements AuthorizationCodeInterface, AccessTokenInterface,
             ->where("up.user_id = :uid", [":uid" => $id])
             ->execute();
 
-        if ($query->failed() || $query->count() == 0) return false;
+        if ($query->failed() || $query->count() == 0) return [];
         $permissionInfo = $query->fetch();
 
         $permissions = [];

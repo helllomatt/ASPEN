@@ -17,7 +17,7 @@ class Auth {
     private $storage    = null;
     private $db         = null;
 
-    private $database_name = 'test';
+    private $database_name = 'aspen-dev';
     private $database_host = 'localhost';
     private $database_user = 'root';
     private $database_pass = 'root';
@@ -96,7 +96,7 @@ class Auth {
         $server = new Server($storage);
 
         $server->addGrantType(new UserCredentials($storage));
-        $server->addGrantType(new RefreshToken($storage));
+        $server->addGrantType(new RefreshToken($storage, ["always_issue_new_refresh_token" => true]));
         $server->addGrantType(new AuthorizationCode($storage));
 
         $this->server   = $server;
