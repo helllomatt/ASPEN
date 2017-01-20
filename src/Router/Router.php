@@ -77,9 +77,11 @@ class Router {
     }
 
     private function requestVariables($type) {
-        if ($type === "input" && strpos($_SERVER['CONTENT_TYPE'], "application/json") === 0) {
+        $vars = [];
+
+        if ($type === "input" && isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], "application/json") === 0) {
             $vars = json_decode(file_get_contents("php://input"), true);
-        } else {
+        } elseif (!is_string($type)) {
             $vars = filter_input_array($type);
         }
 
