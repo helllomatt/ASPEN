@@ -29,7 +29,7 @@ class Router {
     }
 
     public function getVariables() {
-        return array_merge($this->variables, $this->requestVariables(INPUT_POST), $this->requestVariables(INPUT_GET));
+        return array_merge($this->variables, $this->requestVariables(INPUT_POST), $this->requestVariables(INPUT_GET), $this->requestVariables("input"));
     }
 
     public function getVariable($var = '') {
@@ -77,7 +77,12 @@ class Router {
     }
 
     private function requestVariables($type) {
-        $vars = filter_input_array($type);
+        if ($type === "input" && strpos($_SERVER['CONTENT_TYPE'], "application/json") === 0) {
+            $vars = json_decode(file_get_contents("php://input"), true);
+        } else {
+            $vars = filter_input_array($type);
+        }
+
         if (is_array($vars)) return $vars;
         else return [];
     }
