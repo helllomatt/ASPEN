@@ -61,6 +61,7 @@ class Pdo implements AuthorizationCodeInterface, AccessTokenInterface,
 
     public function isPublicClient($client_id) {
         $query = $this->db->query("select")->from($this->config['client_table'])->where("client_id = :cid", [":cid" => $client_id])->execute();
+        print_r($query->failed_because());
         if ($query->failed() || $query->count() == 0) return false;
         $client = $query->fetch()[0];
         return empty($client['client_secret']);
@@ -183,14 +184,14 @@ class Pdo implements AuthorizationCodeInterface, AccessTokenInterface,
         return !$query->failed();
     }
 
-    public function checkUserCredentials($username, $password) {
-        if ($user = $this->getUserByUsername($username))  return $this->checkPassword($user, $password);
+    public function checkUserCredentials($email, $password) {
+        if ($user = $this->getUserByEmail($email))  return $this->checkPassword($user, $password);
         return false;
     }
 
     public function getUserDetails($id) {
         if (is_numeric($id)) return $this->getUser($id);
-        else return $this->getUserByUsername($id);
+        else return $this->getUserByEmail($id);
     }
 
     public function getUserClaims($user_id, $claims) {
@@ -260,8 +261,8 @@ class Pdo implements AuthorizationCodeInterface, AccessTokenInterface,
         return array_merge(['user_id' => $user['id']], $user, $this->getPermissions($id));
     }
 
-    public function getUserByUsername($username) {
-        $query = $this->db->query("select")->from($this->config['user_table'])->where("username = :u", [":u" => $username])->execute();
+    public function getUserByEmail($email) {
+        $query = $this->db->query("select")->from($this->config['user_table'])->where("email = :e", [":e" => $email])->execute();
         if ($query->failed() || $query->count() == 0) return false;
         $user = $query->fetch()[0];
 

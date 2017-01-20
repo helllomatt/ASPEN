@@ -65,7 +65,7 @@ class Auth {
     public function getUser() {
         $token = $this->getToken();
         $query = $this->db->query("select")
-            ->columns(["username", "first_name", "last_name"])
+            ->columns(["email", "firstname", "lastname"])
             ->from("users")
             ->where("id = :uid", [":uid" => $token['user_id']])
             ->execute();
