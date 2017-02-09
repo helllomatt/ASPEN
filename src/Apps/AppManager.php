@@ -16,12 +16,9 @@ class AppManager {
 
     private function findApps() {
         $root = dirname(dirname(dirname(__FILE__)));
-        $possible = array_merge(scandir('apps/'), scandir('vendor/'), scandir($root.'/apps'));
 
         foreach ($possible as $folder) {
             if ($folder == '..' || $folder == '.') continue;
-            $builtin_path = $root.'/apps/%s/controller.php';
-            $app_path = 'apps/%s/controller.php';
             $ven_path = 'vendor/%s/controller.php';
 
             if (file_exists(sprintf($builtin_path, $folder)) || file_exists(sprintf($ven_path, $folder)) || file_exists(sprintf($app_path, $folder))) {
@@ -51,8 +48,6 @@ class AppManager {
         $fail = [];
 
         foreach ($this->getAppFolders() as $folder) {
-            $builtin  = dirname(dirname(dirname(__FILE__))).'/apps/'.$folder.'/controller.php';
-            $app_path = 'apps/'.$folder.'/controller.php';
             $ven_path = 'vendor/'.$folder.'/controller.php';
 
             if (file_exists($app_path)) $app = include $app_path;

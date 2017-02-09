@@ -49,4 +49,3 @@ Temporary Items
 # Custom files and folders
 vendor/
 composer.lock
-apps/tests
