@@ -19,12 +19,12 @@
     ],
     "require": {
         "php": ">=5.6.0",
-        "bshaffer/oauth2-server-php": "~1.8"
+        "bshaffer/oauth2-server-php": "~1.8",
+        "helllomatt/double": "^1.1"
     },
     "autoload": {
         "psr-4": {
             "ASPEN\\": "src/",
-            "ASPEN\\Database\\": "src/Database",
             "Authentication\\": "apps/auth/"
         }
     }

@@ -12,7 +12,7 @@ namespace Authentication;
  * Template file found here: https://github.com/bshaffer/oauth2-server-php/blob/develop/src/OAuth2/Storage/Pdo.php
  */
 
-use ASPEN\Database\DB;
+use Double\DB;
 use OAuth2\Storage\AuthorizationCodeInterface;
 use OAuth2\Storage\AccessTokenInterface;
 use OAuth2\Storage\ClientCredentialsInterface;

@@ -4,7 +4,7 @@ namespace Authentication;
 
 use ASPEN\Config;
 use ASPEN\Response;
-use ASPEN\Database\DB;
+use Double\DB;
 
 use OAuth2\Request;
 use OAuth2\Autoloader;
