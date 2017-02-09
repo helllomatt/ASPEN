@@ -16,15 +16,14 @@ class AppManager {
 
     private function findApps() {
         $root = dirname(dirname(dirname(__FILE__)));
-        $possible = array_merge(scandir('apis/'), scandir('vendor/'), scandir($root.'/apis'));
+        $possible = array_merge(scandir('apis/'), scandir('vendor/'));
 
         foreach ($possible as $folder) {
             if ($folder == '..' || $folder == '.') continue;
-            $builtin_path = $root.'/apis/%s/controller.php';
             $app_path = 'apis/%s/controller.php';
             $ven_path = 'vendor/%s/controller.php';
 
-            if (file_exists(sprintf($builtin_path, $folder)) || file_exists(sprintf($ven_path, $folder)) || file_exists(sprintf($app_path, $folder))) {
+            if (file_exists(sprintf($ven_path, $folder)) || file_exists(sprintf($app_path, $folder))) {
                 $this->folders[] = $folder;
             }
         }
@@ -51,13 +50,11 @@ class AppManager {
         $fail = [];
 
         foreach ($this->getAppFolders() as $folder) {
-            $builtin  = dirname(dirname(dirname(__FILE__))).'/apis/'.$folder.'/controller.php';
             $app_path = 'apis/'.$folder.'/controller.php';
             $ven_path = 'vendor/'.$folder.'/controller.php';
 
             if (file_exists($app_path)) $app = include $app_path;
             elseif (file_exists($ven_path)) $app = include $ven_path;
-            elseif (file_exists($builtin)) $app = include $builtin;
             else {
                 $this->error('App controller not found for \''.$folder.'\'');
                 return;
