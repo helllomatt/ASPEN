@@ -25,6 +25,7 @@
     "autoload": {
         "psr-4": {
             "ASPEN\\": "src/",
+            "Authentication\\": "apis/auth/"
         }
     }
 }
