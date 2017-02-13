@@ -15,6 +15,20 @@ class Config {
         return true;
     }
 
+    public static function loadKeys($privateFile, $publicFile) {
+        $private = file_get_contents($privateFile);
+        if (!$private) {
+            throw new Exception('Failed to load the private key file because it couldn\'t be found or opened.');
+        }
+
+        $public = file_get_contents($publicFile);
+        if (!$public) {
+            throw new Exception('Failed to load the public key file because it couldn\'t be found or opened.');
+        }
+
+        static::$data['keys'] = [ 'private' => $private, 'public' => $public ];
+    }
+
     public static function get($key) {
         return self::$data[$key];
     }
