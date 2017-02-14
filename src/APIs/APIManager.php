@@ -46,7 +46,8 @@ class APIManager {
             $this->apis[] = $api;
         }
 
-        if (array_count_values($fail)[1] >= count($fail)) $this->noResponse();
+        $countValues = array_count_values($fail);
+        if (isset($countValues[1]) && $countValues[1] >= count($fail)) $this->noResponse();
     }
 
     private function noResponse() {
