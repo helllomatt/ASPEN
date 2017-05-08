@@ -4,7 +4,7 @@ namespace ASPEN;
 
 use ASPEN\Database\DB;
 
-class App {
+class API {
     private $number;
     private $router;
     private $name;
