@@ -32,10 +32,11 @@ class Config {
     }
 
     public static function load($file) {
-        $contents = file_get_contents($file);
-        if (!$contents) {
+        if (!file_exists($file)) {
             throw new Exception('Failed to load configuration because the file cannot be found or opened.');
         }
+        
+        $contents = file_get_contents($file);
 
         self::$data = json_decode($contents, true);
         return true;

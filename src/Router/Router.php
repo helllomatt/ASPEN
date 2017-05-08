@@ -7,8 +7,8 @@ class Router {
     private $parts = [];
     private $variables = [];
 
-    public function __construct() {
-        $this->setRoute(filter_input(INPUT_GET, 'route'));
+    public function __construct($route = '') {
+        $this->setRoute($route);
     }
 
     public function setRoute($route = '') {

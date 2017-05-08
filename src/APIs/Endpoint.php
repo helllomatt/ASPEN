@@ -2,14 +2,21 @@
 
 namespace ASPEN;
 
+use Exception;
+
 class Endpoint {
     public $route;
     public $method;
     private $callback;
 
+    private $connector;
+    private $response;
+
     public function __construct($info = []) {
+        if (!array_key_exists('to', $info)) throw new Exception('Invalid route given to endpoint.');
         $this->route  = $info['to'];
-        $this->method = $info['method'];
+
+        if (array_key_exists('method', $info)) $this->method = $info['method'];
         return $this;
     }
 
@@ -22,9 +29,32 @@ class Endpoint {
         return $this->callback;
     }
 
-    public function runCallback(Connector $c) {
+    public function attachConnector(Connector $c) {
+        $this->connector = $c;
+        return $this;
+    }
+
+    public function getConnector() {
+        return $this->connector;
+    }
+
+    public function attachResponse(Response $r) {
+        $this->response = $r;
+        return $this;
+    }
+
+    public function getResponse() {
+        return $this->response == null ? new Response() : $this->response;
+    }
+
+    public function runCallback() {
         $cb = $this->callback;
-        if (!$c->usingMethod($this->method)) return false;
-        else return $cb(new Response(), $c);
+        $connector = $this->getConnector();
+
+        if ($this->method) {
+            if (!$connector->usingMethod($this->method)) return false;
+        }
+
+        return $cb($this->getResponse(), $connector);
     }
 }
