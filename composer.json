@@ -4,12 +4,6 @@
     "version": "1.0",
     "keywords": ["api", "framework"],
     "license": "MIT",
-    "scripts": {
-        "post-install-cmd": [
-            "ASPEN\\Installer::createHtaccess",
-            "ASPEN\\Installer::createIndex"
-        ]
-    },
     "authors": [
         {
             "name": "helllomatt",
