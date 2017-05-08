@@ -20,6 +20,12 @@ class API {
         $this->version = $number;
     }
 
+    public function add(Endpoint $ep) {
+        if ($this->router->matches('v'.$this->version.'/'.$ep->route)) {
+            $this->callbacks[] = $ep;
+        }
+    }
+
     public function get($route, $callback) {
         if ($this->router->matches('v'.$this->version.'/'.$route)) {
             $this->callbacks[] = $callback;
@@ -42,7 +48,9 @@ class API {
 
         $good = [];
         for ($i = 0; $i < count($this->callbacks); $i++) {
-            if ($this->callbacks[$i]($connector) !== false) $good[] = true;
+            if (is_a($this->callbacks[$i], 'ASPEN\Endpoint')) {
+                if ($this->callbacks[$i]->runCallback($connector) !== false) $good[] = true;
+            } elseif ($this->callbacks[$i]($connector) !== false) $good[] = true;
         }
 
         return $good;
