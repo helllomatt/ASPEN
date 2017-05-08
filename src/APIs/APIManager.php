@@ -8,17 +8,12 @@ use ASPEN\Database\DB;
 class APIManager {
     private $folders = [];
     private $apis = [];
-    private $database = null;
 
     public function __construct() { }
 
     private function error($msg = '') {
         $response = new Response();
         $response->error($msg);
-    }
-
-    public function setDatabase(DB $db = null) {
-        $this->database = $db;
     }
 
     public function load(array $locations = []) {
@@ -37,7 +32,6 @@ class APIManager {
                 $this->error('Invalid api setup for \''.$folder.'\' (missing return).');
                 return;
             } else {
-                $api->setDatabase($this->database);
                 $run = $api->run();
                 if (empty($run)) $fail[] = 1;
                 else $fail[] = 0;

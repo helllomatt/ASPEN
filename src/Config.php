@@ -2,6 +2,8 @@
 
 namespace ASPEN;
 
+use Exception;
+
 class Config {
     private static $data;
 
@@ -55,5 +57,14 @@ class Config {
 
     public static function get($key) {
         return self::$data[$key];
+    }
+
+    public static function getDBConfig($db) {
+        if (!self::$data) throw new Exception('Failed to get database configuration, no configuration file was loaded.');
+        if (array_key_exists('databases', self::$data)) {
+            if (array_key_exists($db, self::$data['databases'])) {
+                return self::$data['databases'][$db];
+            } else throw new Exception('Failed to get database configuration, none was provided.');
+        } else throw new Exception('Failed to get database configuration, no databases are given.');
     }
 }

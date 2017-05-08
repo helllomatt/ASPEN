@@ -2,12 +2,12 @@
 
 namespace ASPEN;
 
-use ASPEN\Database\DB;
 use ASPEN\Response;
+use Exception;
 
 class Connector {
     private $data;
-    private $database = null;
+    private $databases = [];
 
     public function setData($data) {
         $this->data = $data;
@@ -18,15 +18,19 @@ class Connector {
         else return null;
     }
 
-    public function setDatabase(DB $db = null) {
-        $this->database = $db;
-    }
-
-    public function db() {
-        return $this->database;
-    }
-
     public function usingMethod($method) {
         return $_SERVER['REQUEST_METHOD'] == strtoupper($method);
+    }
+
+    public function getDB($db) {
+        if (array_key_exists($db, $this->databases)) return $this->databases[$db];
+        elseif (!class_exists('Double\DB')) {
+            throw new Exception('Database library not loaded.');
+        } else {
+            $config = Config::getDBConfig($db);
+            $this->databases[$db] = (new \Double\DB())
+                ->connect($config['host'], $config['username'], $config['password'], $config['db']);
+            return $this->databases[$db];
+        }
     }
 }

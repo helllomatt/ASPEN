@@ -36,15 +36,10 @@ class API {
         return $this->name;
     }
 
-    public function setDatabase(DB $db = null) {
-        $this->database = $db;
-    }
-
     public function run() {
         if (empty($this->callbacks)) return false;
         $connector = new Connector();
         $connector->setData($this->router->getVariables());
-        $connector->setDatabase($this->database);
 
         $good = [];
         for ($i = 0; $i < count($this->callbacks); $i++) {
