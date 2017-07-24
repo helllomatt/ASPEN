@@ -35,7 +35,7 @@ class Config {
         if (!file_exists($file)) {
             throw new Exception('Failed to load configuration because the file cannot be found or opened.');
         }
-        
+
         $contents = file_get_contents($file);
 
         self::$data = json_decode($contents, true);
@@ -67,5 +67,9 @@ class Config {
                 return self::$data['databases'][$db];
             } else throw new Exception('Failed to get database configuration, none was provided.');
         } else throw new Exception('Failed to get database configuration, no databases are given.');
+    }
+
+    public static function add($key, $value) {
+        static::$data[$key] = $value;
     }
 }
