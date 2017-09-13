@@ -52,13 +52,13 @@ class Router {
             if (!isset($this->getParts()[$i])) break;
 
             $routePart = $this->getParts()[$i];
-            $variable = (substr($parts[$i], 0, 1) == '{' && substr($parts[$i], -1, 1) == '}');
+            $variable = (substr($parts[$i], 0, 1) == ':');
 
             if (!$variable) {
                 if ($parts[$i] == $routePart) $has++;
             } else {
                 $expected--;
-                $name = str_replace(['{', '}'], '', $parts[$i]);
+                $name = str_replace(':', '', $parts[$i]);
                 $data = $routePart;
 
                 if ($decode && $this->isJSON($data)) $data = json_decode($data, true);
@@ -79,13 +79,43 @@ class Router {
     private function requestVariables($type) {
         $vars = [];
 
-        if ($type === "input" && isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], "application/json") === 0) {
+        if ($type === "input" && isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], "multipart/form-data") === 0) {
+            $vars = $this->parseFormData(file_get_contents("php://input"));
+        } elseif ($type === "input" && isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], "application/json") === 0) {
             $vars = json_decode(file_get_contents("php://input"), true);
         } elseif (!is_string($type)) {
             $vars = filter_input_array($type);
         }
 
+        for ($i = 0; $i < count($vars); $i++) {
+            if (is_numeric($vars[$i])) $vars[$i] += 0;
+            if ($vars[$i] == "true") $vars[$i] = true;
+            if ($vars[$i] == "false") $var[$i] = false;
+        }
+
         if (is_array($vars)) return $vars;
         else return [];
+    }
+
+    public function parseFormData($raw) {
+        $lines = explode("\n", $raw);
+
+        $outdata = [];
+        for ($i = 0; $i < count($lines); $i++) {
+            $line = $lines[$i];
+            if (substr($line, 0, 1) == "-" && $line == "") continue;
+            preg_match('/"(.*)"/', $line, $matches);
+            if (empty($matches)) continue;
+
+            $vardata = "";
+            for ($o = $i + 2; $o < count($lines); $o++) {
+                if (substr($lines[$o], 0, 1) == "-") break;
+                $vardata .= $lines[$o]."\n";
+            }
+
+            $outdata[$matches[1]] = trim($vardata);
+        }
+
+        return $outdata;
     }
 }
