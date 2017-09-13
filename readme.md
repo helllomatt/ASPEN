@@ -15,7 +15,7 @@ You need to create an index file for your project. This will load your config fi
 
 `index.php`
 
-```
+```php
 <?php
 
 namespace ASPEN;
@@ -49,7 +49,7 @@ If you're using Nginx, you need to modify your site configuration.
 [todo]
 
 
-## Creating a module
+## Creating endpoint
 
 Modules, plugins, addons, or whatever you call them are the separated endpoints to your API. When you define the modules to load in the index file you created above, everything there is an absolute path. The `modules/` folder is just a suggestion, you can organize it however you want.
 
@@ -69,14 +69,31 @@ $api = new API('Sample'); // API name (not really important)
 $api->version(1);         // API version (important)
 
 // API endpoints
-$api->get('test', function() { });
+$api->add((new Endpoint([
+        'to'     => 'test/'
+        'method' => 'get'
+    ]))->then(function(Response $r) {
+        $r->add("hello", "world");
+        $r->success();
+    }))
 
 return $api; // VERY IMPORTANT!
-
 ```
 
 Create the API object, which is just that. Then set the version. The version is important for when an endpoint is called, the version is looked at. (e.g. `localhost/some-api/v1/get` is different than `localhost/some-api/v2/get`)
 
 Then you create your endpoints, or places that can be accessed.
+
+```
+curl http://localhost/aspen/v1/test
+
+[outputs]
+{
+    "status": "success"
+    "data": {
+        "hello": "world"
+    }
+}
+```
 
 Lastly and most importantly you need to return the API object out of the file. An example of the innerworkings for this are `$api = (include 'controller.php');`. That lets ASPEN access the API object and work with it when routing.
