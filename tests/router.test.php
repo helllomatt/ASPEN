@@ -21,7 +21,8 @@ class RouterTest extends \PHPUnit_Framework_TestCase {
 
     public function testMatchingWithMissingVariable() {
         $router = new Router('v1/endpoint/');
-        $this->assertFalse($router->matches('v1/endpoint/:variable'));
+        $this->assertTrue($router->matches('v1/endpoint/:variable'));
+        $this->assertNull($router->getVariable("variable"));
     }
 
     public function testGettingVariables() {

@@ -33,6 +33,7 @@ class Router {
     }
 
     public function getVariable($var = '') {
+        if (!isset($this->variables[$var])) return null;
         return $this->variables[$var];
     }
 
@@ -43,10 +44,20 @@ class Router {
         $parts = explode('/', $path);
         array_pop($parts);
 
-        $expected = count($parts);
         $has = 0;
+        $expected = 0;
+        $varcount = 0;
 
-        if ($expected < count($this->getParts())) return false;
+        for ($i = 0; $i < count($this->getParts()); $i++) {
+            if (!isset($parts[$i])) continue;
+            if (substr($parts[$i], 0, 1) == ":") {
+                $varcount++;
+                continue;
+            }
+            $expected++;
+        }
+
+        if ($expected + $varcount < count($this->getParts())) return false;
 
         for ($i = 0; $i < count($parts); $i++) {
             if (!isset($this->getParts()[$i])) break;
@@ -67,8 +78,8 @@ class Router {
             }
         }
 
-        if ($has > $expected) return false;
-        elseif ($expected == $has) return true;
+        if ($has > $expected + $varcount) return false;
+        elseif ($expected + $varcount == $has) return true;
         else return false;
     }
 
@@ -87,10 +98,12 @@ class Router {
             $vars = filter_input_array($type);
         }
 
-        for ($i = 0; $i < count($vars); $i++) {
-            if (is_numeric($vars[$i])) $vars[$i] += 0;
-            if ($vars[$i] == "true") $vars[$i] = true;
-            if ($vars[$i] == "false") $var[$i] = false;
+        if (is_array($vars)) {
+            foreach ($vars as $key => $val) {
+                if (is_numeric($val)) $vars[$key] += 0;
+                if ($val == "true") $vars[$key] = true;
+                if ($val == "false") $var[$key] = false;
+            }
         }
 
         if (is_array($vars)) return $vars;
