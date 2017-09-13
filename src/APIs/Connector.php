@@ -9,6 +9,17 @@ class Connector {
     private $data;
     private $databases = [];
 
+    private $transfer_data = [];
+
+    public function transfer($key, $value) {
+        $this->transfer_data[$key] = $value;
+    }
+
+    public function getTransferred($key) {
+        if (!array_key_exists($key, $this->transfer_data)) return null;
+        else return $this->transfer_data[$key];
+    }
+
     public function setData($data) {
         $this->data = $data;
     }

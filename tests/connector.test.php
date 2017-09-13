@@ -9,4 +9,11 @@ class ConnectorTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertEquals('value', $connector->getVariable('key'));
     }
+
+    public function testSettingTransferData() {
+        $connector = new Connector();
+        $connector->transfer("foo", "bar");
+
+        $this->assertEquals("bar", $connector->getTransferred("foo"));
+    }
 }

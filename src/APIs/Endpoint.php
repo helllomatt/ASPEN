@@ -7,6 +7,7 @@ use Exception;
 class Endpoint {
     public $route;
     public $method;
+    public $preruns = [];
     private $callback;
 
     private $connector;
@@ -17,6 +18,7 @@ class Endpoint {
         $this->route  = $info['to'];
 
         if (array_key_exists('method', $info)) $this->method = $info['method'];
+        if (array_key_exists('preruns', $info)) $this->preruns = $info['preruns'];
         return $this;
     }
 
@@ -27,6 +29,10 @@ class Endpoint {
 
     public function getCallback() {
         return $this->callback;
+    }
+
+    public function getPreRuns() {
+        return $this->preruns;
     }
 
     public function attachConnector(Connector $c) {

@@ -37,4 +37,42 @@ class APITest extends \PHPUnit_Framework_TestCase {
 
         $this->assertEquals([true], $api->run($connector));
     }
+
+    // public function testRunningEndpointWithPrerun() {
+    //     $router = $this->getMock('ASPEN\Router', ['matches', 'getVariables']);
+    //     $router->expects($this->once())->method('matches')->will($this->returnValue(true));
+    //
+    //     $connector = $this->getMock('ASPEN\Connector', ['setData']);
+    //
+    //     $endpoint = $this->getMock('ASPEN\Endpoint', ['runCallback'], [['to' => 'test', 'preruns' => ['test']]]);
+    //     $endpoint->expects($this->once())->method('runCallback')->will($this->returnValue(function() { return true; }));
+    //
+    //     $api = (new API('name', $router))->version(1);
+    //     $api->add($endpoint);
+    //
+    //     $prerun = function() { echo "foo"; };
+    //     $api->addPreRun("test", $prerun);
+    //
+    //     $this->expectOutputString('foo');
+    //     $api->run($connector);
+    // }
+
+    public function testRunningNonExistantPreRun() {
+        $router = $this->getMock('ASPEN\Router', ['matches', 'getVariables']);
+        $router->expects($this->once())->method('matches')->will($this->returnValue(true));
+
+        $connector = $this->getMock('ASPEN\Connector', ['setData']);
+
+        $endpoint = $this->getMock('ASPEN\Endpoint', ['getPreRuns'], [['to' => 'test', 'preruns' => ['asdf']]]);
+        $endpoint->expects($this->any())->method('getPreRuns')->willReturn(['asdf']);
+
+        $api = (new API('name', $router))->version(1);
+        $api->add($endpoint);
+
+        $prerun = function() { echo "foo"; };
+        $api->addPreRun("test", $prerun);
+
+        $this->expectException('\Exception');
+        $api->run($connector);
+    }
 }

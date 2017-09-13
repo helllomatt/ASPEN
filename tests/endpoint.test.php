@@ -37,4 +37,14 @@ class EndpointTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertTrue($endpoint->runCallback());
     }
+
+    public function testDefaultPreruns() {
+        $endpoint = (new Endpoint(['to' => 'test']));
+        $this->assertEquals([], $endpoint->preruns);
+    }
+
+    public function testAddingPreruns() {
+        $endpoint = (new Endpoint(['to' => 'test', 'preruns' => ['one', 'two']]));
+        $this->assertEquals(['one', 'two'], $endpoint->preruns);
+    }
 }
