@@ -49,7 +49,7 @@ If you're using Nginx, you need to modify your site configuration.
 [todo]
 
 
-## Creating endpoint
+## Creating endpoints
 
 Modules, plugins, addons, or whatever you call them are the separated endpoints to your API. When you define the modules to load in the index file you created above, everything there is an absolute path. The `modules/` folder is just a suggestion, you can organize it however you want.
 
