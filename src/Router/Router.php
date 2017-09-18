@@ -176,7 +176,7 @@ class Router {
      */
     public function parseFormData($raw) {
         $lines = explode("\n", $raw);
-        $lines_count = count($line);
+        $lines_count = count($lines);
 
         $outdata = [];
         for ($i = 0; $i < $lines_count; $i++) {

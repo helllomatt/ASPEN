@@ -40,10 +40,10 @@ class ResponseTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testErrorResponse() {
-        $this->expectOutputString(json_encode(['status' => 'error', 'message' => 'error message']));
+        $this->expectOutputString(json_encode(['status' => 'error', 'error' => 'error', 'message' => 'error message']));
 
         $response = (new Response())->ignoreCount();
-        $response->error('error message');
+        $response->error('error', 200, 'error message');
     }
 
     public function testFailedResponse() {
