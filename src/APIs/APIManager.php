@@ -92,7 +92,7 @@ class APIManager {
 
             foreach ($controllers as $controller) {
                 $path = $folder.'/'.$controller;
-                $api = include $path;
+                $api = include_once $path;
 
                 if ($api === 1) {
                     $this->error('Invalid api setup for \''.$folder.'\' (missing return).');

@@ -9,7 +9,7 @@ class Router {
 
 
     /**
-     * Creates the router with the incoming request path 
+     * Creates the router with the incoming request path
      *
      * @param string $route
      */
@@ -77,6 +77,8 @@ class Router {
      * @return boolean
      */
     public function matches($path, $decode = false) {
+        $route_parts = $this->getParts();
+        $route_parts_count = count($route_parts);
         if ($path == '') $path = '/';
         if (substr($path, -1, 1) != '/') $path .= '/';
 
@@ -90,7 +92,7 @@ class Router {
 
         // loop through the endpoint parts to get a count of the variables
         // and a count of the expected matches
-        for ($i = 0; $i < count($this->getParts()); $i++) {
+        for ($i = 0; $i < $route_parts_count; $i++) {
             if (!isset($parts[$i])) continue;
             if (substr($parts[$i], 0, 1) == ":") {
                 $varcount++;
@@ -99,14 +101,14 @@ class Router {
             $expected++;
         }
 
-        if ($expected + $varcount < count($this->getParts())) return false;
+        if ($expected + $varcount < $route_parts_count) return false;
 
         // loop through the endpoint path to match up each part and also define
         // the variables on their way
         for ($i = 0; $i < count($parts); $i++) {
-            if (!isset($this->getParts()[$i])) break;
+            if (!isset($route_parts[$i])) break;
 
-            $routePart = $this->getParts()[$i];
+            $routePart = $route_parts[$i];
             $variable = (substr($parts[$i], 0, 1) == ':');
 
             if (!$variable) {
@@ -174,16 +176,17 @@ class Router {
      */
     public function parseFormData($raw) {
         $lines = explode("\n", $raw);
+        $lines_count = count($line);
 
         $outdata = [];
-        for ($i = 0; $i < count($lines); $i++) {
+        for ($i = 0; $i < $lines_count; $i++) {
             $line = $lines[$i];
             if (substr($line, 0, 1) == "-" && $line == "") continue;
             preg_match('/"(.*)"/', $line, $matches);
             if (empty($matches)) continue;
 
             $vardata = "";
-            for ($o = $i + 2; $o < count($lines); $o++) {
+            for ($o = $i + 2; $o < $lines_count; $o++) {
                 if (substr($lines[$o], 0, 1) == "-") break;
                 // add a newline because we took them away when we exploded
                 $vardata .= $lines[$o]."\n";
