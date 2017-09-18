@@ -44,6 +44,19 @@ class APIManager {
         $response->error($msg);
     }
 
+    public function getControllerFile($folder) {
+        $files = [];
+        $ending = "controller.php";
+
+        if (!is_dir($folder)) return [];
+
+        foreach (scandir($folder) as $item) {
+            if (substr($item, -strlen($ending)) === $ending) $files[] = $item;
+        }
+
+        return $files;
+    }
+
     /**
      * Loads all of the APIs and collects their information to start figuring out
      * all of the right endpoints
@@ -56,24 +69,28 @@ class APIManager {
         $fail = [];
 
         foreach ($locations as $folder) {
-            $path = $folder.'/controller.php';
+            $controllers = $this->getControllerFile($folder);
 
-            if (file_exists($path)) $api = include $path;
-            else {
-                $this->error('api controller not found for \''.$folder.'\'');
-                return;
+            if (empty($controllers)) {
+                $this->error("API controller not found for '".$folder."'");
+                return $this;
             }
 
-            if ($api === 1) {
-                $this->error('Invalid api setup for \''.$folder.'\' (missing return).');
-                return;
-            } else {
-                $run = $api->run();
-                if (empty($run)) $fail[] = 1;
-                else $fail[] = 0;
-            }
+            foreach ($controllers as $controller) {
+                $path = $folder.'/'.$controller;
+                $api = include $path;
 
-            $this->apis[] = $api;
+                if ($api === 1) {
+                    $this->error('Invalid api setup for \''.$folder.'\' (missing return).');
+                    return $this;
+                } else {
+                    $run = $api->run();
+                    if (empty($run)) $fail[] = 1;
+                    else $fail[] = 0;
+                }
+
+                $this->apis[] = $api;
+            }
         }
 
         $countValues = array_count_values($fail);

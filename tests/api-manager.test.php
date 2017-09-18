@@ -8,9 +8,11 @@ class APIManagerTest extends \PHPUnit_Framework_TestCase {
         mkdir('tests/test-module');
         file_put_contents('tests/bad-test-module/controller.php', '<?php $api = (new ASPEN\API("bad"))->version(1);');
         file_put_contents('tests/test-module/controller.php', '<?php $api = (new ASPEN\API("good"))->version(1); return $api;');
+        file_put_contents("tests/test-module/v2.controller.php", "");
     }
 
     public static function tearDownAfterClass() {
+        unlink("tests/test-module/v2.controller.php");
         unlink('tests/test-module/controller.php');
         unlink('tests/bad-test-module/controller.php');
         rmdir('tests/test-module');
@@ -25,7 +27,7 @@ class APIManagerTest extends \PHPUnit_Framework_TestCase {
     public function testNonExistingLoading() {
         $response = $this->getMock('ASPEN\Response', ['error']);
         $response->expects($this->once())->method('error')->will($this->returnCallback([$this, 'responseErrorCallback']));
-        $this->expectOutputString(json_encode(['status' => 'error', 'message' => 'api controller not found for \'null\'']));
+        $this->expectOutputString(json_encode(['status' => 'error', 'message' => 'API controller not found for \'null\'']));
         $manager = (new APIManager())->attachResponse($response)->load(['null']);
     }
 
@@ -40,5 +42,12 @@ class APIManagerTest extends \PHPUnit_Framework_TestCase {
         $response = $this->getMock('ASPEN\Response');
         $manager = (new APIManager())->attachResponse($response)->load(['tests/test-module'], false);
         $this->assertEquals('good', $manager->getApis()[0]->getName());
+    }
+
+    public function testGettingControllerFile() {
+        $manager = (new APIManager());
+        $controller_files = $manager->getControllerFile("./tests/test-module/");
+
+        $this->assertEquals(["controller.php", "v2.controller.php"], $controller_files);
     }
 }
