@@ -127,7 +127,6 @@ class API {
 
         $good = [];
 
-
         for ($i = 0; $i < count($this->callbacks); $i++) {
             // run the pre runs
             $endpointPreRuns = $this->callbacks[$i]->getPreRuns();

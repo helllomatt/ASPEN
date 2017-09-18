@@ -87,7 +87,8 @@ class Config {
      * @param  string  $key
      * @return any
      */
-    public static function get($key) {
+    public static function get($key, $return_null = false) {
+        if (!array_key_exists($key, self::$data) && $return_null) return null;
         return self::$data[$key];
     }
 

@@ -10,7 +10,15 @@ class APIManager {
     private $apis = [];
     private $response;
 
-    public function __construct() { return $this; }
+    public function __construct() {
+        $usage = [
+            "time" => microtime(true),
+            "memory" => memory_get_usage()
+        ];
+
+        Config::add("usage", $usage);
+        return $this;
+    }
 
     /**
      * Attaches a response to the request to avoid creating unused responses, since
@@ -44,6 +52,12 @@ class APIManager {
         $response->error($msg);
     }
 
+    /**
+     * Finds any controller files in the API
+     *
+     * @param  string $folder
+     * @return array
+     */
     public function getControllerFile($folder) {
         $files = [];
         $ending = "controller.php";

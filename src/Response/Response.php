@@ -6,6 +6,7 @@ class Response {
     private $data = [];
     private $ignoreCount = false;
     private static $count = 0;
+    private $rusage;
 
     /**
      * Defines the default response information
@@ -16,6 +17,29 @@ class Response {
         $this->data['status'] = 'fail';
         $this->data['data'] = [];
         return $this;
+    }
+
+    /**
+     * Calculates the exeuction information on this call
+     *
+     * @return array
+     */
+    public function getExecutionInfo() {
+        $u = Config::get("usage");
+        $n = microtime(true);
+
+        $mbytes = memory_get_usage() - $u['memory'];
+        $units = array('B', 'KB', 'MB', 'GB', 'TB');
+        $bytes = max($mbytes, 0);
+        $pow = floor(($mbytes ? log($mbytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
+        $bytes /= pow(1024, $pow);
+        $memory = round($mbytes, $precision).' '.$units[$pow];
+
+        return [
+            "time" => ($n - $u['time'])." seconds",
+            "memory" => $memory
+        ];
     }
 
     /**
@@ -125,6 +149,9 @@ class Response {
      */
     public function respond() {
         if (!headers_sent()) header('Content-Type: application/json');
+        if (Config::get("respond-with-statistics", true)) {
+            $this->data['execution-stats'] = $this->getExecutionInfo();
+        }
         echo json_encode($this->data);
         self::$count++;
     }
