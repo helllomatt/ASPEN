@@ -7,6 +7,7 @@ class Response {
     private $ignoreCount = false;
     private static $count = 0;
     private $rusage;
+    private $responseCode = 200;
 
     /**
      * Defines the default response information
@@ -125,6 +126,16 @@ class Response {
     }
 
     /**
+     * Defines the HTTP response code
+     *
+     * @param integer $code
+     */
+    public function setResponseCode($code = 200) {
+        $this->responseCode = $code;
+        return $this;
+    }
+
+    /**
      * Sets up the resposne to error out, then errors out
      *
      * @param  string  $message
@@ -132,11 +143,11 @@ class Response {
      * @param  boolean $includeData
      * @return void
      */
-    public function error($message = '', $code = 0, $includeData = false) {
+    public function error($error = "", $code = 200, $message = '') {
         if ($this->hasResponded()) return;
+        $this->setResponseCode($code);
         $this->status('error');
-        if ($code != 0) $this->data['code'] = $code;
-        if (!$includeData) unset($this->data['data']);
+        unset($this->data['data']);
         $this->data['message'] = $message;
         $this->respond();
     }
@@ -149,6 +160,7 @@ class Response {
      */
     public function respond() {
         if (!headers_sent()) header('Content-Type: application/json');
+        http_response_code($this->responseCode);
         if (Config::get("respond-with-statistics", true)) {
             $this->data['execution-stats'] = $this->getExecutionInfo();
         }
