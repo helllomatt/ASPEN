@@ -35,7 +35,7 @@ class Response {
         $pow = floor(($mbytes ? log($mbytes) : 0) / log(1024));
         $pow = min($pow, count($units) - 1);
         $bytes /= pow(1024, $pow);
-        $memory = round($mbytes, $precision).' '.$units[$pow];
+        $memory = round($mbytes, 4).' '.$units[$pow];
 
         return [
             "time" => ($n - $u['time'])." seconds",
@@ -148,6 +148,7 @@ class Response {
         $this->setResponseCode($code);
         $this->status('error');
         unset($this->data['data']);
+        $this->data['error'] = $error;
         $this->data['message'] = $message;
         $this->respond();
     }
