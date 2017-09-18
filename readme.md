@@ -59,7 +59,7 @@ There's a required file for an API called `controller.php`. That does what you t
 
 `controller.php`
 
-```
+```php
 <?php
 
 use ASPEN\API;
